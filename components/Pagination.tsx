@@ -1,29 +1,49 @@
-import Link from "next/link";
-import Image from "next/image";
+"use client";
 
-import CustomButton from "./CustomButton";
+import { useRouter } from "next/navigation";
 
-const NavBar = () => (
-  <nav className='flex justify-between items-center w-full sm:px-16 px-6 py-4'>
-    <Link href='/' className='flex justify-center items-center'>
-      <Image
-        src='/logo.svg'
-        alt='logo'
-        width={118}
-        height={18}
-        className='object-contain'
-      />
-    </Link>
+import { PaginationProps } from "@types";
+import { updateSearchParams } from "@utils";
 
-    <div className='flex text-[14px] leading-[17px] font-extrabold text-primary-purple'>
-      <CustomButton title='Register' btnType='button' />
-      <CustomButton
-        title='Sign in'
-        btnType='button'
-        containerStyles='max-sm:hidden px-4 py-2 border-primary-purple border-[1px] rounded-xl hover:bg-primary-purple hover:text-white'
-      />
+const Pagination = ({ pageNumber = 1, isNext }: PaginationProps) => {
+  const router = useRouter();
+
+  const handleNavigation = (type: string) => {
+    // Calculate the new limit based on the page number and navigation type
+    const newLimit = (pageNumber + (type === "prev" ? -1 : 1)) * 10;
+
+    // Update the "limit" search parameter in the URL with the new value
+    const newPathname = updateSearchParams("limit", `${newLimit}`);
+    router.push(newPathname);
+  };
+
+  return (
+    <div className='w-full flex justify-center items-center gap-5 mt-10'>
+      <button
+        disabled={pageNumber <= 1}
+        className={`border-none outline-none px-4 py-2 rounded-md ${
+          pageNumber <= 1 ? "bg-gray-200 text-white" : "bg-primary-purple-100"
+        }`}
+        onClick={() => {
+          if (pageNumber > 1) {
+            handleNavigation("prev");
+          }
+        }}
+      >
+        Prev
+      </button>
+      <p className='text-sm font-bold'>{pageNumber || 1}</p>
+      <button
+        disabled={isNext}
+        className={`border-none outline-none px-4 py-2 rounded-md ${
+          isNext ? "bg-gray-200 text-white" : "bg-primary-purple-100"
+        }`}
+        onClick={() => handleNavigation("next")}
+      >
+        Next
+      </button>
     </div>
-  </nav>
-);
+  );
+};
 
-export default NavBar;
+export default Pagination;
