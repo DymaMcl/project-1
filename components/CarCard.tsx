@@ -1,5 +1,5 @@
+import { calculateCarRent } from "@utils";
 import CustomButton from "./CustomButton";
-
 
 interface CarCardProps {
   model: string;
@@ -8,6 +8,7 @@ interface CarCardProps {
   transmission: string;
   year: number;
   drive: string;
+  cityMPG: number;
 }
 
 const CarCard = ({
@@ -17,8 +18,11 @@ const CarCard = ({
   transmission,
   year,
   drive,
+  cityMPG,
 }: CarCardProps) => {
   const imaginApiKey = process.env.NEXT_PUBLIC_IMAGIN_API_KEY;
+
+  const carRent = calculateCarRent(cityMPG, year);
 
   return (
     <div className='group relative flex flex-col p-8 justify-center items-start text-black-400 bg-[rgba(59,60,152,0.02)] rounded-[40px]'>
@@ -31,7 +35,7 @@ const CarCard = ({
         <span className='self-start text-[14px] leading-[17px] font-semibold'>
           $
         </span>
-        42
+        {carRent}
         <span className='self-end text-[14px] leading-[17px] font-medium'>
           /day
         </span>
