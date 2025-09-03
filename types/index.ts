@@ -46,9 +46,14 @@ export interface CustomButtonProps {
   handleClick?: MouseEventHandler<HTMLButtonElement>;
 }
 
-export interface FilterItemProps {
+export interface OptionProps {
   title: string;
-  options: string[];
+  value: string;
+}
+
+export interface CustomFilterProps {
+  title: string;
+  options: OptionProps[];
 }
 
 export interface PaginationProps {

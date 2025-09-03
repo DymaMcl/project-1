@@ -1,10 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 import { SearchButtonProps } from "@types";
+import SearchManufacturer from "./SearchManufacturer";
 
 const SearchButton = ({ otherClasses, imgUrl, imgAlt }: SearchButtonProps) => (
   <button type='submit' className={`-ml-3 z-10 ${otherClasses}`}>
@@ -19,29 +20,18 @@ const SearchButton = ({ otherClasses, imgUrl, imgAlt }: SearchButtonProps) => (
 );
 
 const SearchBar = () => {
+  const [manufacturer, setManuFacturer] = useState("");
+  const [model, setModel] = useState("");
+
   const router = useRouter();
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Extract the input elements from the event target
-    const target = e.target as typeof e.target & {
-      elements: {
-        model: { value: string };
-        manufacturer: { value: string };
-      };
-    };
+    if (manufacturer.trim() === "" && model.trim() === "")
+      return alert("Please provide some input");
 
-    // Get the values of the model and manufacturer inputs
-    const modelValue = target.elements.model.value;
-    const manufacturerValue = target.elements.manufacturer.value;
-
-    // Check if both modelValue and manufacturerValue are empty
-    if (modelValue === "" && manufacturerValue === "")
-      alert("Please provide some search parameters...");
-
-    // update the URL search parameters
-    updateSearchParams(modelValue, manufacturerValue);
+    updateSearchParams(model.toLowerCase(), manufacturer.toLowerCase());
   };
 
   const updateSearchParams = (model: string, manufacturer: string) => {
@@ -69,23 +59,10 @@ const SearchBar = () => {
       className='flex items-center justify-center max-sm:flex-col w-full relative mx-auto max-sm:gap-4 max-w-3xl'
       onSubmit={handleSearch}
     >
-      <div className='flex-1 max-sm:w-full flex justify-start items-center relative'>
-        <Image
-          src='/car-logo.svg'
-          width={25}
-          height={25}
-          className='absolute ml-4'
-          alt='car logo'
-        />
-        <input
-          type='text'
-          name='manufacturer'
-          placeholder='BMW...'
-          className='w-full h-[52px] pl-12 p-4 rounded-l-full max-sm:rounded-full bg-light-white outline-none text-white-800 cursor-pointer'
-        />
-        <SearchButton otherClasses='sm:hidden' />
-      </div>
-
+      <SearchManufacturer
+        manufacturer={manufacturer}
+        setManuFacturer={setManuFacturer}
+      />
       <div className='flex-1 max-sm:w-full flex justify-start items-center relative'>
         <Image
           src='/model-icon.png'
@@ -97,6 +74,8 @@ const SearchBar = () => {
         <input
           type='text'
           name='model'
+          value={model}
+          onChange={(e) => setModel(e.target.value)}
           placeholder='M8 sport...'
           className='w-full h-[52px] pl-12 p-4 bg-light-white rounded-r-full max-sm:rounded-full outline-none text-white-800 cursor-pointer'
         />
