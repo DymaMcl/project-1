@@ -1,41 +1,29 @@
-"use client";
+import Link from "next/link";
+import Image from "next/image";
 
-import { useRouter } from "next/navigation";
+import CustomButton from "./CustomButton";
 
-import { PaginationProps } from "@types";
-import { updateSearchParams } from "@utils";
+const NavBar = () => (
+  <nav className='flex justify-between items-center w-full sm:px-16 px-6 py-4'>
+    <Link href='/' className='flex justify-center items-center'>
+      <Image
+        src='/logo.svg'
+        alt='logo'
+        width={118}
+        height={18}
+        className='object-contain'
+      />
+    </Link>
 
-const Pagination = ({ pageNumber = 1 }: PaginationProps) => {
-  const router = useRouter();
-
-  const handleNavigation = (type: string) => {
-    const newLimit = (pageNumber + (type === "prev" ? -1 : 1)) * 10;
-
-    const newPathname = updateSearchParams("limit", `${newLimit}`);
-    router.push(newPathname);
-  };
-
-  return (
-    <div className="w-full flex justify-center items-center gap-5 mt-10">
-      <button
-        className="border-none outline-none bg-purple-100 px-4 py-2 rounded-md"
-        onClick={() => {
-          if (pageNumber > 1) {
-            handleNavigation("prev");
-          }
-        }}
-      >
-        Prev
-      </button>
-      <p className="text-sm font-bold">{pageNumber || 1}</p>
-      <button
-        className="border-none outline-none bg-purple-100 px-4 py-2 rounded-md"
-        onClick={() => handleNavigation("next")}
-      >
-        Next
-      </button>
+    <div className='flex text-[14px] leading-[17px] font-extrabold text-primary-purple'>
+      <CustomButton title='Register' btnType='button' />
+      <CustomButton
+        title='Sign in'
+        btnType='button'
+        containerStyles='max-sm:hidden px-4 py-2 border-primary-purple border-[1px] rounded-xl hover:bg-primary-purple hover:text-white'
+      />
     </div>
-  );
-};
+  </nav>
+);
 
-export default Pagination;
+export default NavBar;

@@ -13,11 +13,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang='en'>
       <body>
+        {/* <div className='main'>
+          <div className='gradient' />
+        </div> */}
+
+        {/* <div className='relative z-20'> */}
         <NavBar />
         {children}
         <Footer />
+        {/* </div> */}
       </body>
     </html>
   );
