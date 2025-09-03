@@ -1,9 +1,15 @@
 import { Dialog, Transition } from "@headlessui/react";
+import { CarProps } from "@types";
 import Image from "next/image";
 import { Fragment } from "react";
 
-// @ts-ignore
-const CarDetails = ({ isOpen, closeModal, car }) => {
+interface CarDetailsProps {
+  isOpen: boolean;
+  closeModal: () => void;
+  car: CarProps;
+}
+
+const CarDetails = ({ isOpen, closeModal, car }: CarDetailsProps) => {
   const imaginApiKey = process.env.NEXT_PUBLIC_IMAGIN_API_KEY;
 
   return (
@@ -36,7 +42,7 @@ const CarDetails = ({ isOpen, closeModal, car }) => {
                 <Dialog.Panel className='relative w-full max-w-lg max-h-[90vh] overflow-y-auto transform rounded-2xl bg-white p-6 text-left shadow-xl transition-all flex flex-col gap-5'>
                   <button
                     type='button'
-                    className='absolute top-2 right-2 z-10 w-fit p-2 bg-primary-purple-100 rounded-full'
+                    className='absolute top-2 right-2 z-10 w-fit p-2 bg-primary-blue-100 rounded-full'
                     onClick={closeModal}
                   >
                     <Image
@@ -64,7 +70,7 @@ const CarDetails = ({ isOpen, closeModal, car }) => {
                     </div>
 
                     <div className='flex gap-3'>
-                      <div className='flex-1 relative w-full h-24 bg-primary-purple-100 rounded-lg'>
+                      <div className='flex-1 relative w-full h-24 bg-primary-blue-100 rounded-lg'>
                         <Image
                           src={`https://cdn.imagin.studio/getimage?customer=${imaginApiKey}&make=${
                             car.make
@@ -79,7 +85,7 @@ const CarDetails = ({ isOpen, closeModal, car }) => {
                           className='object-contain'
                         />
                       </div>
-                      <div className='flex-1 relative w-full h-24 bg-primary-purple-100 rounded-lg'>
+                      <div className='flex-1 relative w-full h-24 bg-primary-blue-100 rounded-lg'>
                         <Image
                           src={`https://cdn.imagin.studio/getimage?customer=${imaginApiKey}&make=${
                             car.make
@@ -92,7 +98,7 @@ const CarDetails = ({ isOpen, closeModal, car }) => {
                           className='object-contain'
                         />
                       </div>
-                      <div className='flex-1 relative w-full h-24 bg-primary-purple-100 rounded-lg'>
+                      <div className='flex-1 relative w-full h-24 bg-primary-blue-100 rounded-lg'>
                         <Image
                           src={`https://cdn.imagin.studio/getimage?customer=${imaginApiKey}&make=${
                             car.make
@@ -122,7 +128,7 @@ const CarDetails = ({ isOpen, closeModal, car }) => {
                           <h4 className='text-grey capitalize'>
                             {key.split("_").join(" ")}
                           </h4>
-                          <p className='text-black-400 font-semibold'>
+                          <p className='text-black-100 font-semibold'>
                             {value}
                           </p>
                         </div>

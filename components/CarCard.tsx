@@ -3,14 +3,21 @@
 import Image from "next/image";
 import { useState } from "react";
 
-import { CarProps } from "@types";
-import { calculateCarRent } from "@utils";
+import { addCarToLocalStorage, calculateCarRent } from "@utils";
 import CustomButton from "./CustomButton";
 import CarDetails from "./CarDetails";
+import { usePathname } from "next/navigation";
+import { CarProps } from "@types";
 
-// @ts-ignore
-const CarCard = ({ car }) => {
-  const { city_mpg, year, make, model, transmission, drive, mpg } = car;
+interface CarCardProps {
+  car: CarProps;
+}
+
+const CarCard = ({ car }: CarCardProps) => {
+  const pathName = usePathname();
+
+  const [isLiked, setIsLiked] = useState(false);
+  const { city_mpg, year, make, model, transmission, drive } = car;
 
   let [isOpen, setIsOpen] = useState(false);
 
@@ -24,13 +31,35 @@ const CarCard = ({ car }) => {
     setIsOpen(true);
   }
 
+  function handleFavorites() {
+    setIsLiked(!isLiked);
+    addCarToLocalStorage(car);
+  }
+
   const carRent = calculateCarRent(city_mpg, year);
 
   return (
-    <div className='group flex flex-col p-6 justify-center items-start text-black-400 bg-light-white-100 rounded-[24px] hover:shadow-md'>
-      <h2 className='text-[22px] leading-[26px] font-bold capitalize'>
-        {make} {model}
-      </h2>
+    <div className='group flex flex-col p-6 justify-center items-start text-black-100 bg-primary-blue-100 hover:bg-white hover:shadow-md rounded-3xl'>
+      <div className='w-full flex justify-between items-start gap-2'>
+        <h2 className='text-[22px] leading-[26px] font-bold capitalize'>
+          {make} {model}
+        </h2>
+
+        <Image
+          src={
+            pathName === "/my-favorites"
+              ? "/heart-filled.svg"
+              : !isLiked
+              ? "/heart-outline.svg"
+              : "/heart-filled.svg"
+          }
+          width={24}
+          height={24}
+          alt='heart'
+          className='object-contain cursor-pointer mt-0.5'
+          onClick={handleFavorites}
+        />
+      </div>
 
       <p className='flex mt-6 text-[32px] leading-[38px] font-extrabold'>
         <span className='self-start text-[14px] leading-[17px] font-semibold'>
@@ -55,7 +84,7 @@ const CarCard = ({ car }) => {
       </div>
 
       <div className='relative flex w-full mt-2'>
-        <div className='flex w-full justify-between text-grey'>
+        <div className='flex group-hover:invisible w-full justify-between text-grey'>
           <div className='flex flex-col justify-center items-center gap-2'>
             <Image
               src='/steering-wheel.svg'
@@ -73,14 +102,14 @@ const CarCard = ({ car }) => {
           </div>
           <div className='flex flex-col justify-center items-center gap-2'>
             <Image src='/gas.svg' width={20} height={20} alt='seat' />
-            <p className='text-[14px] leading-[17px]'>{mpg} MPG</p>
+            <p className='text-[14px] leading-[17px]'>{city_mpg} MPG</p>
           </div>
         </div>
 
         <div className='hidden group-hover:flex absolute bottom-0 w-full z-10'>
           <CustomButton
             title='View More'
-            containerStyles='w-full py-[16px] rounded-lg bg-gradient-to-r from-[#5E60C1] from-[0.78%] to-[#7E80CD] to-[99.38%]'
+            containerStyles='w-full py-[16px] rounded-full bg-primary-blue'
             textStyles='text-white text-[14px] leading-[17px] font-bold'
             rightIcon='/right-arrow.svg'
             handleClick={openModal}
