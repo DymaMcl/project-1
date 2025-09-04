@@ -1,105 +1,65 @@
-import { Fragment, useState } from "react";
+/* eslint-disable react/no-unescaped-entities */
+"use client"
+import { manufacturers } from "@/constants";
+import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions, Transition } from "@headlessui/react";
+import clsx from "clsx";
 import Image from "next/image";
-import { Combobox, Transition } from "@headlessui/react";
+import { useState } from "react";
 
-import { manufacturers } from "@constants";
-import { SearchManuFacturerProps } from "@types";
 
-const SearchManufacturer = ({
-  manufacturer,
-  setManuFacturer,
-}: SearchManuFacturerProps) => {
-  const [query, setQuery] = useState("");
-
-  const filtereManufacturers =
-    query === ""
-      ? manufacturers
-      : manufacturers.filter((item) =>
-          item
-            .toLowerCase()
-            .replace(/\s+/g, "")
-            .includes(query.toLowerCase().replace(/\s+/g, ""))
-        );
-
-  return (
-    <div className='flex-1 max-sm:w-full flex justify-start items-center'>
-      <Combobox value={manufacturer} onChange={setManuFacturer}>
-        <div className='relative w-full'>
-          <Combobox.Button className='absolute top-[14px]'>
-            <Image
-              src='/car-logo.svg'
-              width={25}
-              height={25}
-              className='ml-4'
-              alt='car logo'
-            />
-          </Combobox.Button>
-          <Combobox.Input
-            className='w-full h-[52px] pl-12 p-4 rounded-l-full max-sm:rounded-full bg-light-white outline-none text-white-800 cursor-pointer'
-            displayValue={(item: string) => item}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder='bmw...'
-          />
-
-          <Transition
-            as={Fragment}
-            leave='transition ease-in duration-100'
-            leaveFrom='opacity-100'
-            leaveTo='opacity-0'
-            afterLeave={() => setQuery("")}
-          >
-            <Combobox.Options
-              className='absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm'
-              static
-            >
-              {filtereManufacturers.length === 0 && query !== "" ? (
-                <Combobox.Option
-                  value={query}
-                  className='cursor-default select-none py-2 pl-10 pr-4'
-                >
-                  Create "{query}"
-                </Combobox.Option>
-              ) : (
-                filtereManufacturers.map((item) => (
-                  <Combobox.Option
-                    key={item}
-                    className={({ active }) =>
-                      `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                        active ? "bg-primary-blue text-white" : "text-gray-900"
-                      }`
-                    }
-                    value={item}
-                  >
-                    {({ selected, active }) => (
-                      <>
-                        <span
-                          className={`block truncate ${
-                            selected ? "font-medium" : "font-normal"
-                          }`}
-                        >
-                          {item}
-                        </span>
-
-                        {selected ? (
-                          <span
-                            className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
-                              active
-                                ? "text-white"
-                                : "text-pribg-primary-purple"
-                            }`}
-                          ></span>
-                        ) : null}
-                      </>
-                    )}
-                  </Combobox.Option>
-                ))
-              )}
-            </Combobox.Options>
-          </Transition>
+const SearchManufacture = ({ manufacture, setManufacture }: {
+    manufacture: string;
+    setManufacture: (manufacture: string) => void;
+}) => {
+    const [query, setQuery] = useState("")
+    const filteredManufacture = query === ""
+        ? manufacturers
+        : manufacturers.filter((item) =>
+        (item.toLowerCase().replace(/\s+/g, "")
+            .includes(query.toLowerCase().replace(/\s+/g, ""))))
+    return (
+        <div className="flex-1 w-full flex justify-start items-center relative">
+            <Combobox value={manufacture} onChange={setManufacture}>
+                <div className="relative w-full">
+                    <ComboboxButton className="absolute top-[14px]">
+                        <Image src='/car-logo.svg' width={20}
+                            height={20} alt='carLogo' className="ml-4" />
+                    </ComboboxButton>
+                    <ComboboxInput placeholder="Volkswagen..."
+                        className={clsx("rounded-lg pl-12 p-4 border w-full h-[48px]",
+                             "outline-none focus:outline-gray-200 bg-light-white", 
+                             "cursor-pointer text-sm ")}
+                        displayValue={(manufacture: string) => manufacture}
+                        onChange={(e) => setQuery(e.target.value)} />
+                </div>
+                <Transition>
+                    <div className={clsx([
+                        "transition ease-in duration-100",
+                        "data-[enter]:opacity-100",
+                        "data-[closed]:opacity-0",
+                        `data-[leave]:${()=> setQuery("") }`
+                    ])}>
+                        <ComboboxOptions transition className={clsx(
+                            "absolute left-10 top-10 w-[250px] md:w-[190px] mt-1 max-h-60 z-10 overflow-auto rounded-md bg-white py-1 text-base shadow-lg", 
+                            "ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm")}>
+                            {filteredManufacture.length === 0 && query !== "" ?
+                                    <ComboboxOption className="relative cursor-default select-none py-2 pl-10 pr-4" value="Can't find your desire name">
+                                        Can't find your desire name
+                                    </ComboboxOption> 
+                                    :  filteredManufacture.map((item) => (
+                                        <ComboboxOption key={item} value={item}
+                                            className="data-[focus]:bg-primary-blue data-[focus]:text-white text-gray-900 cursor-default select-none py-2 pl-10 pr-4"
+                                        >
+                                            {item}
+                                        </ComboboxOption>
+                                    ))
+                            }
+                        </ComboboxOptions>
+                    </div>
+                </Transition>
+            </Combobox>
         </div>
-      </Combobox>
-    </div>
-  );
-};
+    )
+}
 
-export default SearchManufacturer;
+export default SearchManufacture

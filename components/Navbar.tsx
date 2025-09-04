@@ -1,58 +1,42 @@
-"use client";
+ "use client"
 
-import Link from "next/link";
-import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { CiUser } from 'react-icons/ci';
+import { IoMdLogOut } from "react-icons/io";
+import { signOut } from 'next-auth/react';
+import { redirect} from 'next/navigation';
 
-import CustomButton from "./CustomButton";
 
-const NavBar = () => {
-  const pathName = usePathname();
+interface NavbarProps{
+  session:any;
+  activeIndex:number;
+  setActiveIndex:(activeIndex:number)=>void
+}
+const Navbar = ({session,activeIndex,setActiveIndex}:NavbarProps) => {
+  
+    if (!session) redirect('/auth/signin')
 
+  const handleClick =(index:any)=>{
+    setActiveIndex(index)
+  }
   return (
-    <header className='w-full  absolute z-10'>
-      <nav className='max-w-[1440px] mx-auto flex justify-between items-center sm:px-16 px-6 py-4 bg-transparent'>
-        <Link href='/' className='flex justify-center items-center'>
-          <Image
-            src='/logo.svg'
-            alt='logo'
-            width={118}
-            height={18}
-            className='object-contain'
-          />
-        </Link>
+    <div className='w-[80%] mx-auto sm:w-[200px] sm:h-[350px] bg-blue-50 relative flex flex-col'>
+            <div className='pt-3 bg-primary-blue text-white rounded-lg h-[100px]'>
+                <span className="text-4xl flex justify-center"><CiUser /></span>
+                <p className='text-center mt-2'>{session?.user?.email}</p>
+            </div>
+            <ul className='flex h-[150px] justify-around sm:flex-col'>
+              <li className={`h-[50px] flex justify-center items-center text-center rounded-lg cursor-pointer mt-5 ${activeIndex === 0 ?"bg-primary-blue text-white" :""} `} onClick={()=>handleClick(0)}>User&apos;s Details</li>
+              <li className={`h-[50px] flex justify-center items-center text-center rounded-lg cursor-pointer mt-5 ${activeIndex === 1 ?"bg-primary-blue text-white" :""} `} onClick={()=>handleClick(1)}>Previous Purchase</li>
 
-        {/* <ul className='sm:flex hidden gap-7'>
-          <Link href='/'>
-            <li
-              className={`${
-                pathName === "/" ? "text-primary-blue" : "text-black-100"
-              } text-[18px] font-medium`}
-            >
-              Rental Deals
-            </li>
-          </Link>
-          <Link href='/my-favorites'>
-            <li
-              className={`${
-                pathName === "/my-favorites"
-                  ? "text-primary-blue"
-                  : "text-black-100"
-              } text-[18px] font-medium`}
-            >
-              Favorite Cars
-            </li>
-          </Link>
-        </ul> */}
+            </ul>
+            <div className=" absolute bottom-0 w-full h-[50px] flex items-center justify-evenly cursor-pointer 
+             bg-primary-blue text-white rounded-lg" onClick={()=>signOut()}>
+                Log out 
+                <IoMdLogOut />
+            </div>
 
-        <CustomButton
-          title='Sign in'
-          btnType='button'
-          containerStyles='text-primary-blue rounded-full bg-white min-w-[130px]'
-        />
-      </nav>
-    </header>
-  );
-};
+    </div>
+  )
+}
 
-export default NavBar;
+export default Navbar
