@@ -1,15 +1,16 @@
-/** @type {import('tailwindcss').Config} */
-module.exports = {
+import type { Config } from "tailwindcss";
+
+const config: Config = {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
-  mode: "jit",
   theme: {
     extend: {
-      fontFamily: {
-        inter: ["Inter", "sans-serif"],
+      backgroundImage: {
+        'pattern': "url('/pattern.png')",
+        'hero-bg': "url('/hero-bg.png')"
       },
       colors: {
         "black-100": "#2B2C35",
@@ -24,11 +25,11 @@ module.exports = {
         },
         grey: "#747A88",
       },
-      backgroundImage: {
-        'pattern': "url('/pattern.png')",
-        'hero-bg': "url('/hero-bg.png')"
+      gridTemplateColumns:{
+        "custom": "150px auto"
       }
     },
   },
   plugins: [],
 };
+export default config;
